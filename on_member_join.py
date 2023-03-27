@@ -1,15 +1,24 @@
 import discord
 
-client = discord.Client()
+intents = discord.Intents.default()
+intents.members = True
+client = discord.Client(intents=intents)
+
 
 @client.event
 async def on_member_join(member):
-    # Check if the member joined via the specific link
-    if "https://discord.gg/Qhvv92HYSt" in member.guild.me.invite_url:
-        # Replace "=CALUM= Private" with the name of the role you want to assign
-        role = discord.utils.get(member.guild.roles, name="=CALUM= Private")
-        await member.add_roles(role)
+    # Fetch the invites for the guild
+    invites = await member.guild.invites()
+    # Check if the invite is the specific link
+    for invite in invites:
+        if "https://discord.gg/Qhvv92HYSt" in invite.url:
+            # Gives role "=CALUM= Private" 
+            role = discord.utils.get(member.guild.roles, name="=CALUM= Private")
+            await member.add_roles(role)
+            break
 
-# Replace "YOUR_TOKEN_HERE" with your bot token
-client.run("MTA5MDAzNTU1MTE1NzEwODg1Ng.GLQBcT.HhoseTfJIwnei-Ykf351drDjxAH-I68tUJ60vw")
+# TOKEN
+client.run("TOKEN")
+
+
 
