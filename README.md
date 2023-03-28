@@ -10,8 +10,10 @@ the bot also checks if the command is being snet in the correct chat and if the 
 The bot will send a message to the channel "moderation-log" if some one edits or deletes their message.
 
 If Message edit:
+
 ![image](https://user-images.githubusercontent.com/75133815/228279206-c360f212-b32d-4549-934a-9c47013f8de4.png)
 
 If Message delete:
+
 ![image](https://user-images.githubusercontent.com/75133815/228279411-226b7e96-df9c-4a5f-9b7c-3f98ff688bd0.png)
 
