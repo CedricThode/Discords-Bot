@@ -1,30 +1,25 @@
 import discord
 from discord.ext import commands
-from enum import Enum
 
 intents = discord.Intents.all()
 intents.members = True
 intents.message_content = True
 
 class aclient(discord.Client):
-  def __init__(self):
-    super().__init__(intents = intents)
-    self.synced = False 
-    self.added = False
+    def __init__(self):
+        super().__init__(intents=intents)
+        self.synced = False 
 
-  async def on_ready(self):
-    await self.wait_until_ready()
-    if not self.synced: 
-      await tree.sync(guild = discord.Object('1090057965622546464'))
-      self.synced = True
-    if not self.added:
-      self.added = True
-    print(f"Say hi to {self.user}!")
+    async def on_ready(self):
+        if not self.synced: 
+            await tree.sync(guild=discord.utils.get(self.guilds, name='my_guild'))
+            self.synced = True
+        print(f"Say hi to {self.user}!")
 
 client = aclient()
 tree = discord.app_commands.CommandTree(client)
 
-@tree.command(description='Count members with "=CALUM= Private" role.', guild=discord.Object('1090057965622546464'))
+@tree.command(description='Count members with "=CALUM= Private" role.')
 @commands.check(lambda ctx: any(role.name in ['=CALUM= Officers', 'CÆLUM_on_member_join'] for role in ctx.author.roles))
 async def privates(ctx):
     guild = ctx.guild
@@ -33,7 +28,7 @@ async def privates(ctx):
     member_count = len(role.members)
     await channel.send(f"The number of members with the '=CALUM= Private' role is {member_count}.")
 
-@tree.command(description='Count members with "=CALUM= Sergeatns" role.', guild=discord.Object('1090057965622546464'))
+@tree.command(description='Count members with "=CALUM= Sergeatns" role.')
 @commands.check(lambda ctx: any(role.name in ['=CALUM= Officers', 'CÆLUM_on_member_join'] for role in ctx.author.roles))
 async def sergeants(ctx):
     guild = ctx.guild
@@ -42,7 +37,7 @@ async def sergeants(ctx):
     member_count = len(role.members)
     await channel.send(f"The number of members with the '=CALUM= Sergeants' role is {member_count}.")
 
-@tree.command(description='Count members with "=CALUM= Officers" role.', guild=discord.Object('1090057965622546464'))
+@tree.command(description='Count members with "=CALUM= Officers" role.')
 @commands.check(lambda ctx: any(role.name in ['=CALUM= Officers', 'CÆLUM_on_member_join'] for role in ctx.author.roles))
 async def officers(ctx):
     guild = ctx.guild
@@ -63,5 +58,3 @@ async def on_member_join(member):
             break
 
 client.run('TOKEN')
-
-
