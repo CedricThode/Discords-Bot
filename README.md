@@ -5,6 +5,7 @@ The second function of the Bot creates 4 slash functions that count the ammount 
 the bot also checks if the command is being snet in the correct chat and if the user that is using them has a rank higher than or equal to the ones pre-defined.
 
 the bot has 3 commands:
+
 /privates
 /sergeants
 /officers
