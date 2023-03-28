@@ -7,7 +7,9 @@ the bot also checks if the command is being snet in the correct chat and if the 
 the bot has 3 commands:
 
 /privates
+
 /sergeants
+
 /officers
 
 
