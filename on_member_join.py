@@ -18,6 +18,9 @@ class aclient(discord.Client):
         print(f"{self.user} is online!")
 
     async def on_message_edit(self, before, after):
+        if before.channel.category.name == '╔══════•|• Staff •|•══════╗':
+            return  # Ignore messages edited in the "staff" category
+
         channel = discord.utils.get(before.guild.channels, name='moderation-log')
         if channel:
             embed = discord.Embed(title='Message Edited', color=discord.Color.gold())
@@ -31,6 +34,9 @@ class aclient(discord.Client):
             await channel.send(embed=embed)
 
     async def on_message_delete(self, message):
+        if message.channel.category.name == '╔══════•|• Staff •|•══════╗':
+            return  # Ignore messages deleted in the "staff" category
+    
         channel = discord.utils.get(message.guild.channels, name='moderation-log')
         if channel:
             embed = discord.Embed(title='Message Deleted', color=discord.Color.red())
