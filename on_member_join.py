@@ -21,6 +21,12 @@ class aclient(discord.Client):
         if before.channel.category.name == '╔══════•|• Staff •|•══════╗':
             return  # Ignore messages edited in the "staff" category
 
+        # Checks if the message contains a GIF
+        if any(attachment.url.endswith(('.gif', '.gifv')) for attachment in after.attachments):
+            # Check if the message contains a Discord Tenor GIF
+            if any(attachment.proxy_url.startswith('https://media.discordapp.net/tenor') for attachment in after.attachments):
+                return  # Ignore Discord Tenor GIFs
+
         channel = discord.utils.get(before.guild.channels, name='moderation-log')
         if channel:
             embed = discord.Embed(title='Message Edited', color=discord.Color.gold())
@@ -50,33 +56,40 @@ client = aclient()
 tree = discord.app_commands.CommandTree(client)
 
 @tree.command(description='Count members with "=CALUM= Private" role.')
-@commands.check(lambda ctx: any(role.name in ['=CALUM= Officers', 'CÆLUM_on_member_join'] for role in ctx.author.roles))
+@commands.check(lambda ctx: max(role.position for role in ctx.author.roles) >= max(
+        discord.utils.get(ctx.guild.roles, name='=CALUM= Officers').position,
+        discord.utils.get(ctx.guild.roles, name='CÆLUM_on_member_join').position))
 async def privates(ctx):
     guild = ctx.guild
     role = discord.utils.get(guild.roles, name='=CALUM= Private')
     channel = discord.utils.get(guild.channels, name='role-counter')
     member_count = len(role.members)
     await channel.send(f"The number of members with the '=CALUM= Private' role is {member_count}.")
+    return
 
 @tree.command(description='Count members with "=CALUM= Sergeatns" role.')
-@commands.check(lambda ctx: any(role.name in ['=CALUM= Officers', 'CÆLUM_on_member_join'] for role in ctx.author.roles))
+@commands.check(lambda ctx: max(role.position for role in ctx.author.roles) >= max(
+        discord.utils.get(ctx.guild.roles, name='=CALUM= Officers').position,
+        discord.utils.get(ctx.guild.roles, name='CÆLUM_on_member_join').position))
 async def sergeants(ctx):
     guild = ctx.guild
     role = discord.utils.get(guild.roles, name='=CALUM= Sergeants')
     channel = discord.utils.get(guild.channels, name='role-counter')
     member_count = len(role.members)
     await channel.send(f"The number of members with the '=CALUM= Sergeants' role is {member_count}.")
+    return
 
 @tree.command(description='Count members with "=CALUM= Officers" role.')
-@commands.check(lambda ctx: any(role.name in ['=CALUM= Officers', 'CÆLUM_on_member_join'] for role in ctx.author.roles))
+@commands.check(lambda ctx: max(role.position for role in ctx.author.roles) >= max(
+        discord.utils.get(ctx.guild.roles, name='=CALUM= Officers').position,
+        discord.utils.get(ctx.guild.roles, name='CÆLUM_on_member_join').position))
 async def officers(ctx):
     guild = ctx.guild
     role = discord.utils.get(guild.roles, name='=CALUM= Officers')
     channel = discord.utils.get(guild.channels, name='role-counter')
     member_count = len(role.members)
     await channel.send(f"The number of members with the '=CALUM= Officers' role is {member_count}.")
-
-
+    return
 
 @client.event
 async def on_member_join(member):
