@@ -14,7 +14,12 @@ class aclient(discord.Client):
         if not self.synced: 
             await tree.sync(guild=discord.utils.get(self.guilds, name='my_guild'))
             self.synced = True
-        print(f"Say hi to {self.user}!")
+        print(f"{self.user} is online!")
+
+    async def on_message_edit(self, before, after):
+        channel = discord.utils.get(before.guild.channels, name='moderation-log')
+        if channel:
+            await channel.send(f"Message edited in {before.channel.mention}: {before.author.mention} edited their message:\n\n{before.content} -> {after.content}\n\n{before.jump_url}")
 
 client = aclient()
 tree = discord.app_commands.CommandTree(client)
@@ -57,4 +62,4 @@ async def on_member_join(member):
             await member.add_roles(role)
             break
 
-client.run('TOKEN')
+client.run('MTA5MDAzNTU1MTE1NzEwODg1Ng.GMIAgq.Vz3jxumkyAEwWE1O4bveVstWlOnoOkFU_nAEe4')
