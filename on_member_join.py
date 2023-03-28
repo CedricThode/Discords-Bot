@@ -57,9 +57,9 @@ async def officers(ctx):
 async def on_member_join(member):
     invites = await member.guild.invites()
     for invite in invites:
-        if "https://discord.gg/HYMWgpFaBq" in invite.url:
+        if "Invite_link" in invite.url:
             role = discord.utils.get(member.guild.roles, name="=CALUM= Private")
             await member.add_roles(role)
             break
 
-client.run('MTA5MDAzNTU1MTE1NzEwODg1Ng.GMIAgq.Vz3jxumkyAEwWE1O4bveVstWlOnoOkFU_nAEe4')
+client.run('TOKEN')
