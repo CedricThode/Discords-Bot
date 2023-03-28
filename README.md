@@ -1,4 +1,4 @@
-# Discords-Bot
+# Cælum Discord-Bot
 
 This bot Gives everyone who joins the server thru a specific invite link the Role Private. 
 The second function of the Bot creates 4 slash functions that count the ammount of people with the designated roles.
