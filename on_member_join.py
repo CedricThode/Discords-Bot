@@ -30,6 +30,16 @@ class aclient(discord.Client):
             embed.add_field(name='Jump URL', value=before.jump_url, inline=False)
             await channel.send(embed=embed)
 
+    async def on_message_delete(self, message):
+        channel = discord.utils.get(message.guild.channels, name='moderation-log')
+        if channel:
+            embed = discord.Embed(title='Message Deleted', color=discord.Color.red())
+            embed.add_field(name='Channel', value=message.channel.mention, inline=False)
+            embed.add_field(name='User', value=message.author.mention, inline=False)
+            embed.add_field(name='Message', value=f'```{message.content}```', inline=False)
+            embed.add_field(name='Deleted At', value=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC'), inline=False)
+            await channel.send(embed=embed)
+
 client = aclient()
 tree = discord.app_commands.CommandTree(client)
 
