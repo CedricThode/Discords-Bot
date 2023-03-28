@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from datetime import datetime
 
 intents = discord.Intents.all()
 intents.members = True
@@ -19,7 +20,15 @@ class aclient(discord.Client):
     async def on_message_edit(self, before, after):
         channel = discord.utils.get(before.guild.channels, name='moderation-log')
         if channel:
-            await channel.send(f"Message edited in {before.channel.mention}: {before.author.mention} edited their message:\n\n{before.content} -> {after.content}\n\n{before.jump_url}")
+            embed = discord.Embed(title='Message Edited', color=discord.Color.gold())
+            embed.add_field(name='Channel', value=before.channel.mention, inline=False)
+            embed.add_field(name='User', value=before.author.mention, inline=False)
+            embed.add_field(name='Before', value=f'```{before.content}```', inline=False)
+            embed.add_field(name='After', value=f'```{after.content}```', inline=False)
+            embed.add_field(name='Edited At', value=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC'), inline=False)
+            embed.add_field(name='Original Sent At', value=before.created_at.strftime('%Y-%m-%d %H:%M:%S UTC'), inline=False)
+            embed.add_field(name='Jump URL', value=before.jump_url, inline=False)
+            await channel.send(embed=embed)
 
 client = aclient()
 tree = discord.app_commands.CommandTree(client)
