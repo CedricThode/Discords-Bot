@@ -1,6 +1,9 @@
 import discord
+import pytz
 from discord.ext import commands
-from datetime import datetime
+from datetime import datetime, timezone
+from pytz import timezone as tz
+
 
 intents = discord.Intents.all()
 intents.members = True
@@ -20,24 +23,34 @@ class aclient(discord.Client):
     async def on_message_edit(self, before, after):
         if before.channel.category.name == '╔══════•|• Staff •|•══════╗':
             return  # Ignore messages edited in the "staff" category
+        if before.channel.category.name == '╔═══•|• Server Info •|•════╗':
+            return  # Ignore messages edited in the "Server Info" category
 
-        # Checks if the message contains a GIF
+    # Checks if the message contains a GIF or link
+        if any(attachment.proxy_url.startswith(('http://', 'https://')) for attachment in after.attachments):
+            return  # Ignore links
+    
         if any(attachment.url.endswith(('.gif', '.gifv')) for attachment in after.attachments):
-            # Check if the message contains a Discord Tenor GIF
+        # Check if the message contains a Discord Tenor GIF
             if any(attachment.proxy_url.startswith('https://media.discordapp.net/tenor') for attachment in after.attachments):
-                return  # Ignore Discord Tenor GIFs
-
+                return
+            if any(attachment.proxy_url.startswith('https://cdn.discordapp.com/attachments/') for attachment in after.attachments):
+                return  
+            
+        
         channel = discord.utils.get(before.guild.channels, name='moderation-log')
+        cet_tz = timezone('CET')
         if channel:
             embed = discord.Embed(title='Message Edited', color=discord.Color.gold())
             embed.add_field(name='Channel', value=before.channel.mention, inline=False)
             embed.add_field(name='User', value=before.author.mention, inline=False)
             embed.add_field(name='Before', value=f'```{before.content}```', inline=False)
             embed.add_field(name='After', value=f'```{after.content}```', inline=False)
-            embed.add_field(name='Edited At', value=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC'), inline=False)
-            embed.add_field(name='Original Sent At', value=before.created_at.strftime('%Y-%m-%d %H:%M:%S UTC'), inline=False)
+            embed.add_field(name='Edited At', value=datetime.now(cet_tz).strftime('%Y-%m-%d %H:%M:%S %Z'), inline=False)
+            embed.add_field(name='Original Sent At', value=before.created_at.astimezone(cet_tz).strftime('%Y-%m-%d %H:%M:%S %Z'), inline=False)
             embed.add_field(name='Jump URL', value=before.jump_url, inline=False)
             await channel.send(embed=embed)
+
 
     async def on_message_delete(self, message):
         if message.channel.category.name == '╔══════•|• Staff •|•══════╗':
@@ -95,7 +108,7 @@ async def officers(ctx):
 async def on_member_join(member):
     invites = await member.guild.invites()
     for invite in invites:
-        if "Invite_link" in invite.url:
+        if "https://discord.gg/HYMWgpFaBq" in invite.url:
             role = discord.utils.get(member.guild.roles, name="=CALUM= Private")
             await member.add_roles(role)
             break
